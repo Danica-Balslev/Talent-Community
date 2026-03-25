@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --klaviyo-poppy: #f96353;
+  --klaviyo-cotton: #fffcf9;
+  --klaviyo-charcoal: #232121;
+  --klaviyo-stone: #dbd4cc;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  @apply bg-klaviyo-charcoal text-klaviyo-cotton antialiased;
+}
+
+::selection {
+  background-color: rgba(249, 99, 83, 0.35);
+  color: #232121;
+}

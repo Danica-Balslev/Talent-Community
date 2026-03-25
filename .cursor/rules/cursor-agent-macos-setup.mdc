@@ -1,0 +1,68 @@
+---
+description: macOS Homebrew setup plus Cursor Agent CLI (brew PATH, git, gh, node, agent)
+alwaysApply: true
+---
+
+# macOS — Homebrew & Cursor Agent setup
+
+Use this when the user needs **Homebrew**, **`brew`-based tools**, or the **Cursor Agent CLI** on **macOS**.
+
+## Homebrew — install
+
+- **Official installer** (interactive; needs **sudo** + TTY — run in the user’s Terminal, not the agent-only shell):
+
+```bash
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+```
+
+- **This repo** also installs Homebrew if missing: `scripts/setup-cursor-agent.sh` (same sudo/Tty requirement).
+
+## Homebrew — PATH in `~/.zshrc`
+
+After install, the installer prints two `eval "$(...brew shellenv)"` lines. Ensure **one** of them is in `~/.zshrc` so new terminals see `brew`:
+
+| Mac              | Add to `~/.zshrc` |
+|------------------|-------------------|
+| **Apple Silicon** | `eval "$(/opt/homebrew/bin/brew shellenv)"` |
+| **Intel**        | `eval "$(/usr/local/bin/brew shellenv)"` |
+
+Then: `source ~/.zshrc` or open a new terminal.
+
+## Homebrew — verify
+
+```bash
+which brew
+brew --version
+brew doctor
+```
+
+If `which brew` is empty, PATH is not set for that shell — fix `~/.zshrc` as above.
+
+## Homebrew — maintain
+
+```bash
+brew update
+brew upgrade   # optional; upgrades installed formulae
+```
+
+## Project script location
+
+- `scripts/setup-cursor-agent.sh` — installs Homebrew (if needed), then **git**, **gh**, **node**, **Cursor CLI**, and adds **`~/.local/bin`** to PATH.
+
+## How to run the project script (human, interactive Terminal)
+
+```bash
+bash "/path/to/Cursor Hackathon March/scripts/setup-cursor-agent.sh"
+```
+
+Or copy the script to **Desktop** and run: `cd ~/Desktop && bash setup-cursor-agent.sh`
+
+Then: `source ~/.zshrc`, then **`agent`**.
+
+## If the user has no admin password
+
+Homebrew’s default install **requires sudo**. Without it, do not assume `brew` works. They need password reset, another admin, or IT; offer non-Homebrew installs (e.g. **nodejs.org**) when appropriate.
+
+## Agent terminal limitation
+
+The AI/agent environment often **cannot** complete Homebrew install (no TTY / sudo). Direct the user to **Terminal** or **Cursor’s integrated terminal** on their Mac.
