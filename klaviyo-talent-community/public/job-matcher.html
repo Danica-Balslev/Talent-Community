@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <script>
+    (function () {
+      try {
+        if (new URLSearchParams(window.location.search).get('embedded') === '1') {
+          document.documentElement.classList.add('job-matcher-embedded');
+        }
+      } catch (e) {}
+    })();
+    </script>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Klaviyo Careers - Find Your Perfect Role</title>
+    <link rel="stylesheet" href="/job-matcher.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- PDF.js library for parsing PDF resumes -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <div class="logo">
+                <span class="logo-icon">K</span>
+                <span class="logo-text">Klaviyo Careers</span>
+            </div>
+            <nav class="nav">
+                <a href="/#join" class="nav-link" target="_parent" rel="noreferrer">Talent community</a>
+                <a href="#form-section" class="nav-link">Find Your Role</a>
+                <a href="#all-roles" class="nav-link">Browse All</a>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>Find Your Perfect Role at <span class="highlight">Klaviyo</span></h1>
+                <p class="hero-subtitle">Tell us about yourself and we'll match you with open positions that fit your skills, experience, and preferences.</p>
+                <div class="hero-stats">
+                    <div class="stat">
+                        <span class="stat-number" id="total-jobs">--</span>
+                        <span class="stat-label">Open Roles</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="total-locations">--</span>
+                        <span class="stat-label">Locations</span>
+                    </div>
+                    <div class="stat">
+                        <span class="stat-number" id="total-departments">--</span>
+                        <span class="stat-label">Departments</span>
+                    </div>
+                </div>
+                <a href="#form-section" class="btn-primary">Get Started</a>
+            </div>
+        </div>
+        <div class="hero-decoration">
+            <div class="floating-shape shape-1"></div>
+            <div class="floating-shape shape-2"></div>
+            <div class="floating-shape shape-3"></div>
+        </div>
+    </section>
+
+    <!-- Form Section -->
+    <section id="form-section" class="form-section">
+        <div class="container">
+            <div class="form-header">
+                <h2>Tell Us About Yourself</h2>
+                <p>Fill out the form below and we'll find the best matching roles for you.</p>
+            </div>
+            
+            <form id="candidate-form" class="candidate-form">
+                <!-- Resume Upload -->
+                <div class="form-group resume-upload-section">
+                    <label>Upload Your Resume (Optional)</label>
+                    <p class="form-hint">Upload your resume and we'll auto-fill the form for you</p>
+                    <div class="resume-dropzone" id="resume-dropzone">
+                        <input type="file" id="resume-input" name="resume" accept=".pdf,.doc,.docx,.txt" hidden>
+                        <div class="dropzone-content">
+                            <div class="dropzone-icon">
+                                <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                    <polyline points="14 2 14 8 20 8"></polyline>
+                                    <line x1="12" y1="18" x2="12" y2="12"></line>
+                                    <line x1="9" y1="15" x2="15" y2="15"></line>
+                                </svg>
+                            </div>
+                            <p class="dropzone-text">Drag & drop your resume here or <span class="dropzone-link">browse files</span></p>
+                            <p class="dropzone-formats">Supports PDF, DOC, DOCX, TXT</p>
+                        </div>
+                    </div>
+                    <div class="resume-uploaded hidden" id="resume-uploaded">
+                        <div class="uploaded-file">
+                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                <polyline points="14 2 14 8 20 8"></polyline>
+                            </svg>
+                            <span id="uploaded-filename">resume.pdf</span>
+                            <button type="button" class="remove-resume" id="remove-resume">&times;</button>
+                        </div>
+                        <div class="parsing-status" id="parsing-status">
+                            <span class="parsing-spinner"></span>
+                            <span>Analyzing resume...</span>
+                        </div>
+                        <div class="parsing-success hidden" id="parsing-success">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <span>Form auto-filled from resume!</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-divider">
+                    <span>or fill in manually</span>
+                </div>
+
+                <!-- Personal Info -->
+                <div class="form-group-row">
+                    <div class="form-group">
+                        <label for="firstName">First Name <span class="required">*</span></label>
+                        <input type="text" id="firstName" name="firstName" required placeholder="Enter your first name">
+                    </div>
+                    <div class="form-group">
+                        <label for="lastName">Last Name <span class="required">*</span></label>
+                        <input type="text" id="lastName" name="lastName" required placeholder="Enter your last name">
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email Address <span class="required">*</span></label>
+                    <input type="email" id="email" name="email" required placeholder="your.email@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone">Phone Number</label>
+                    <input type="tel" id="phone" name="phone" placeholder="(555) 123-4567">
+                </div>
+
+                <!-- How Did You Hear About Us -->
+                <div class="form-group">
+                    <label for="hearAbout">How did you hear about Klaviyo? <span class="required">*</span></label>
+                    <select id="hearAbout" name="hearAbout" required>
+                        <option value="">Select an option</option>
+                        <option value="online-search">Online Search (Google, Bing, etc.)</option>
+                        <option value="linkedin">LinkedIn</option>
+                        <option value="glassdoor">Glassdoor</option>
+                        <option value="indeed">Indeed</option>
+                        <option value="company-website">Klaviyo Website</option>
+                        <option value="social-media">Social Media (Twitter, Instagram, etc.)</option>
+                        <option value="advertisement">Advertisement</option>
+                        <option value="career-fair">Career Fair / Event</option>
+                        <option value="university">University / Campus Recruiting</option>
+                        <option value="news-article">News Article / Press</option>
+                        <option value="podcast">Podcast</option>
+                        <option value="referral">Friend / Employee Referral</option>
+                        <option value="recruiter">Recruiter Contacted Me</option>
+                        <option value="other">Other</option>
+                    </select>
+                </div>
+
+                <!-- Referral Details (shown conditionally) -->
+                <div class="form-group referral-details hidden" id="referral-details">
+                    <label for="referrerName">Referrer's Name <span class="required">*</span></label>
+                    <p class="form-hint">Please enter the full name of the Klaviyo employee who referred you</p>
+                    <input type="text" id="referrerName" name="referrerName" placeholder="e.g., John Smith">
+                </div>
+
+                <!-- Other Source Details (shown conditionally) -->
+                <div class="form-group other-source-details hidden" id="other-source-details">
+                    <label for="otherSource">Please specify</label>
+                    <input type="text" id="otherSource" name="otherSource" placeholder="How did you hear about us?">
+                </div>
+
+                <!-- Experience Level -->
+                <div class="form-group">
+                    <label for="experience">Years of Experience <span class="required">*</span></label>
+                    <select id="experience" name="experience" required>
+                        <option value="">Select your experience level</option>
+                        <option value="0-2">0-2 years (Entry Level)</option>
+                        <option value="2-5">2-5 years (Mid Level)</option>
+                        <option value="5-8">5-8 years (Senior)</option>
+                        <option value="8-12">8-12 years (Lead/Staff)</option>
+                        <option value="12+">12+ years (Director/Executive)</option>
+                    </select>
+                </div>
+
+                <!-- Department Interest -->
+                <div class="form-group">
+                    <label>Department Interest <span class="required">*</span></label>
+                    <p class="form-hint">Select all departments you're interested in</p>
+                    <div class="checkbox-grid" id="department-checkboxes">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="departments" value="engineering">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Engineering</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="departments" value="product">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Product</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="departments" value="design">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Design</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="departments" value="sales">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Sales</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="departments" value="marketing">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Marketing</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="departments" value="customer-success">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Customer Success</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="departments" value="finance">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Finance</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="departments" value="hr">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">People/HR</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="departments" value="operations">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Operations</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="departments" value="data">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Data/Analytics</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="departments" value="security">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Security</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="departments" value="any">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Open to Anything!</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Location Preferences -->
+                <div class="form-group">
+                    <label>Preferred Locations <span class="required">*</span></label>
+                    <p class="form-hint">Select your preferred work locations</p>
+                    <div class="checkbox-grid" id="location-checkboxes">
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="locations" value="Boston, MA">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Boston, MA</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="locations" value="San Francisco, CA">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">San Francisco, CA</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="locations" value="Denver, CO">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Denver, CO</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="locations" value="London, UK">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">London, UK</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="locations" value="Dublin, IE">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Dublin, IE</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="locations" value="Sydney, AU">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Sydney, AU</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="locations" value="Singapore">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Singapore</span>
+                        </label>
+                        <label class="checkbox-label">
+                            <input type="checkbox" name="locations" value="any">
+                            <span class="checkbox-custom"></span>
+                            <span class="checkbox-text">Open to Any Location</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Skills -->
+                <div class="form-group">
+                    <label for="skills">Key Skills</label>
+                    <p class="form-hint">Enter your key skills separated by commas</p>
+                    <textarea id="skills" name="skills" rows="3" placeholder="e.g., Python, JavaScript, Data Analysis, Project Management, Sales, Marketing Automation"></textarea>
+                </div>
+
+                <!-- Additional Info -->
+                <div class="form-group">
+                    <label for="about">Tell Us More About Yourself</label>
+                    <textarea id="about" name="about" rows="4" placeholder="Share anything else you'd like us to know about your background, career goals, or what you're looking for in your next role..."></textarea>
+                </div>
+
+                <!-- Email Subscription -->
+                <div class="form-group email-subscription">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="emailSubscribe" id="emailSubscribe" value="yes">
+                        <span class="checkbox-custom"></span>
+                        <span class="email-subscription-text">
+                            <span class="email-subscription-title">Subscribe to Klaviyo emails</span>
+                            <span class="email-subscription-description">Get career tips, company updates, and be the first to know about new job opportunities at Klaviyo.</span>
+                        </span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submit-btn">
+                    <span class="btn-text">Find My Matches</span>
+                    <span class="btn-loader hidden">
+                        <span class="loader-dot"></span>
+                        <span class="loader-dot"></span>
+                        <span class="loader-dot"></span>
+                    </span>
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Results Section -->
+    <section id="results-section" class="results-section hidden">
+        <div class="container">
+            <div class="results-header">
+                <h2>Your Matched Roles</h2>
+                <p id="results-summary">Based on your profile, we found <span id="match-count">0</span> roles that might be a great fit!</p>
+            </div>
+
+            <div class="results-filters">
+                <div class="filter-group">
+                    <label for="sort-by">Sort by:</label>
+                    <select id="sort-by">
+                        <option value="match">Best Match</option>
+                        <option value="title">Job Title</option>
+                        <option value="location">Location</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-location">Location:</label>
+                    <select id="filter-location">
+                        <option value="all">All Locations</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="results-grid" class="results-grid">
+                <!-- Job cards will be dynamically inserted here -->
+            </div>
+
+            <div id="no-results" class="no-results hidden">
+                <div class="no-results-icon">🔍</div>
+                <h3>No Exact Matches Found</h3>
+                <p>Try adjusting your preferences or browse all open roles below.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- All Roles Section -->
+    <section id="all-roles" class="all-roles-section">
+        <div class="container">
+            <div class="all-roles-header">
+                <h2>Browse All Open Roles</h2>
+                <p>Explore all <span id="all-roles-count">0</span> open positions at Klaviyo</p>
+            </div>
+
+            <div class="search-filter-bar">
+                <div class="search-box">
+                    <input type="text" id="search-jobs" placeholder="Search roles...">
+                    <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <path d="M21 21l-4.35-4.35"></path>
+                    </svg>
+                </div>
+                <div class="filter-buttons" id="department-filters">
+                    <button class="filter-btn active" data-filter="all">All</button>
+                </div>
+            </div>
+
+            <div id="all-jobs-grid" class="results-grid">
+                <!-- All job cards will be inserted here -->
+            </div>
+
+            <div class="load-more-container">
+                <button id="load-more" class="btn-secondary hidden">Load More Roles</button>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-brand">
+                    <span class="logo-icon">K</span>
+                    <span>Klaviyo Careers</span>
+                </div>
+                <p class="footer-text">Building the future of marketing automation</p>
+                <div class="footer-links">
+                    <a href="https://www.klaviyo.com/careers" target="_blank">Official Careers Page</a>
+                    <a href="https://www.klaviyo.com" target="_blank">Klaviyo.com</a>
+                </div>
+            </div>
+            <p class="footer-disclaimer">This is an unofficial job matching tool. All job data is pulled from Klaviyo's public job board.</p>
+        </div>
+    </footer>
+
+    <!-- Job Detail Modal -->
+    <div id="job-modal" class="modal hidden">
+        <div class="modal-overlay"></div>
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">&times;</button>
+            <div id="modal-body">
+                <!-- Job details will be inserted here -->
+            </div>
+        </div>
+    </div>
+
+    <script src="/scripts/job-matcher.js"></script>
+    <script>
+    (function () {
+      if (new URLSearchParams(location.search).get('embedded') !== '1') return;
+      function sendHeight() {
+        if (window.parent === window) return;
+        var h = Math.max(
+          document.body.scrollHeight,
+          document.documentElement.scrollHeight,
+          document.body.offsetHeight,
+          document.documentElement.offsetHeight
+        );
+        window.parent.postMessage(
+          { type: 'klaviyo-job-matcher-height', height: h },
+          window.location.origin
+        );
+      }
+      function startObserver() {
+        var mo = new MutationObserver(function () { sendHeight(); });
+        mo.observe(document.body, { childList: true, subtree: true, attributes: true });
+      }
+      window.addEventListener('load', function () {
+        sendHeight();
+        startObserver();
+        setTimeout(sendHeight, 100);
+        setTimeout(sendHeight, 400);
+        setTimeout(sendHeight, 1500);
+      });
+      window.addEventListener('resize', sendHeight);
+    })();
+    </script>
+</body>
+</html>
