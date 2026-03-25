@@ -134,3 +134,20 @@ export function JoinTheCommunityButton({ className }: { className?: string }) {
     </button>
   );
 }
+
+const navJoinClass =
+  "cursor-pointer border-0 bg-transparent p-0 text-sm text-klaviyo-cotton/70 transition hover:text-klaviyo-cotton focus-visible:rounded focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-klaviyo-poppy/50";
+
+/** Header nav — opens the same survey modal as JoinTheCommunityButton. */
+export function JoinSurveyNavButton({ className }: { className?: string }) {
+  const { openJoinSurvey } = useJoinSurveyModal();
+  return (
+    <button
+      type="button"
+      className={[navJoinClass, className].filter(Boolean).join(" ")}
+      onClick={() => openJoinSurvey()}
+    >
+      Join
+    </button>
+  );
+}
